@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
+	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
 	"os"
@@ -51,19 +53,18 @@ func main() {
 				log.Println("read:", err)
 				return
 			}
-			//var orders Orders
-			//json.Unmarshal(message, &orders)
-			//fmt.Printf("|%-9.2f|%-9.2f|\n", Green + "Price" + Reset, Green + "Amount" + Reset)
-			//for _, v := range orders.Data.Asks {
-			//	fmt.Printf("|%-9.2f|%-9.2f|\n", v[0], v[1])
-			//}
-			//fmt.Printf("|%-9.2f|%-9.2f|\n", Red + "Price" + Reset, Green + "Amount" + Reset)
-			//for _, v := range orders.Data.Bids {
-			//	fmt.Printf("|%-9.2f|%-9.2f|\n", v[0], v[1])
-			//}
-			//fmt.Println("*********************")
-			//fmt.Println("----------------------")
-			log.Printf("recv: %s", message)
+			var orders Orders
+			json.Unmarshal(message, &orders)
+			for _, v := range orders.Data.Bids {
+				fmt.Print(Green)
+				fmt.Println(v)
+				fmt.Print(Reset)
+			}
+			for _, v := range orders.Data.Asks {
+				fmt.Print(Red)
+				fmt.Println(v)
+				fmt.Print(Reset)
+			}
 		}
 	}()
 
