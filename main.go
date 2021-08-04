@@ -33,11 +33,11 @@ func main() {
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
-
+	count := 0
 	url := "wss://stream.binance.com:9443/stream?streams=ethbtc@depth5"
 	log.Printf("connecting to %s", url)
 
-	c, _, err := websocket.DefaultDialer.Dial("wss://stream.binance.com:9443/stream?streams=btcusdt@depth20", nil)
+	c, _, err := websocket.DefaultDialer.Dial(url, nil)
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
@@ -56,15 +56,21 @@ func main() {
 			var orders Orders
 			json.Unmarshal(message, &orders)
 			for _, v := range orders.Data.Bids {
+				count++
 				fmt.Print(Green)
 				fmt.Println(v)
 				fmt.Print(Reset)
 			}
+			fmt.Println(count)
+			count = 0
 			for _, v := range orders.Data.Asks {
+				count++
 				fmt.Print(Red)
 				fmt.Println(v)
 				fmt.Print(Reset)
 			}
+			fmt.Println(count)
+			count = 0
 		}
 	}()
 
